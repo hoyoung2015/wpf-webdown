@@ -11,15 +11,14 @@ import us.codecraft.webmagic.scheduler.FileCacheQueueScheduler;
  */
 public class App 
 {
-	private static String REQ_URL = "http://127.0.0.1:81";
-//	private static String REQ_URL = "http://www.wisco.com.cn/wgxw2015/index.jhtml";
+//	private static String REQ_URL = "http://127.0.0.1:81";
+	private static String REQ_URL = "http://192.168.21.190:8375/rimp/login.do";
     public static void main( String[] args )
     {
-    	Spider spider = Spider.create(new WfpPageProcessor())
+    	Spider.create(new WfpPageProcessor())
+    	.setDownloader(new HtmlUnitDownloader())
     	.setScheduler(new FileCacheQueueScheduler("E:\\huyang\\webfootprint\\urls"))
-    	.addUrl(REQ_URL).thread(5);
-    	DuplicateRemovedScheduler scheduler = (DuplicateRemovedScheduler) spider.getScheduler();
-    	spider.setDownloader(new HtmlUnitDownloader(scheduler))
+    	.addUrl(REQ_URL).thread(5)
     	.run();
     }
 }

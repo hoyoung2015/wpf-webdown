@@ -3,6 +3,7 @@ package us.codecraft.webmagic.downloader.htmlunit;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import us.codecraft.webmagic.Page;
@@ -21,13 +22,6 @@ public class HtmlUnitDownloader implements Downloader,Cloneable {
 	private Logger logger = Logger.getLogger(getClass());
 	private volatile WebClientPool webClientPool;
 	private int poolSize = 1;
-	private DuplicateRemovedScheduler duplicateRemovedScheduler;
-	public HtmlUnitDownloader() {
-		
-	}
-	public HtmlUnitDownloader(DuplicateRemovedScheduler duplicateRemovedScheduler) {
-		this.duplicateRemovedScheduler = duplicateRemovedScheduler;
-	}
 	private void checkInit() {
         if (webClientPool == null) {
             synchronized (this){
@@ -63,21 +57,28 @@ public class HtmlUnitDownloader implements Downloader,Cloneable {
 		}
 		List<HtmlAnchor> anchors = htmlPage.getAnchors();
 		System.out.println("----------------->");
+		Page page = new Page();
+		page.setStatusCode(htmlPage.getWebResponse().getStatusCode());
 		for (HtmlAnchor htmlAnchor : anchors) {
-			String href = htmlAnchor.getAttribute("href");
-			System.out.println(href);
-			System.out.println("".equals(href));//
+//			String s = htmlAnchor.getHtmlPageOrNull().getWebResponse().getContentAsString();
+//			System.out.println(s);
 			/*
 			 * 校验是否合法
 			 * 非空串
 			 * 存在href属性
+			 * 是否为本站
 			 */
+			try {
+				com.gargoylesoftware.htmlunit.Page p = htmlAnchor.click();
+				String newUrl = p.getUrl().toString();
+				System.out.println("newUrl:"+newUrl);
+				page.addTargetRequest(newUrl);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		System.out.println("<-----------------");
-		 Page page = new Page();
-		 page.setStatusCode(htmlPage.getWebResponse().getStatusCode());
 		 String content = htmlPage.getWebResponse().getContentAsString();
-//		 System.out.println(UrlUtils.fixAllRelativeHrefs(content, request.getUrl()));
 		 page.setUrl(new PlainText(request.getUrl()));
 		 page.setRequest(request);
 		 page.setRawText(content);
