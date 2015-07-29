@@ -2,7 +2,6 @@ package net.hoyoung.app.wfp_webdown;
 
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.downloader.htmlunit.HtmlUnitDownloader;
-import us.codecraft.webmagic.scheduler.DuplicateRemovedScheduler;
 import us.codecraft.webmagic.scheduler.FileCacheQueueScheduler;
 
 /**

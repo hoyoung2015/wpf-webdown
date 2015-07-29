@@ -3,14 +3,12 @@ package us.codecraft.webmagic.downloader.htmlunit;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.downloader.Downloader;
-import us.codecraft.webmagic.scheduler.DuplicateRemovedScheduler;
 import us.codecraft.webmagic.selector.PlainText;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
