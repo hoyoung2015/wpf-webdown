@@ -1,7 +1,10 @@
 package us.codecraft.webmagic.downloader.htmlunit;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
+
+import net.hoyoung.app.wfp_webdown.utils.WfpUrlUtils;
 
 import org.apache.log4j.Logger;
 
@@ -16,7 +19,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-public class HtmlUnitDownloader implements Downloader,Cloneable {
+public class HtmlUnitDownloader implements Downloader,Closeable {
 	private Logger logger = Logger.getLogger(getClass());
 	private volatile WebClientPool webClientPool;
 	private int poolSize = 1;
@@ -58,22 +61,32 @@ public class HtmlUnitDownloader implements Downloader,Cloneable {
 		Page page = new Page();
 		page.setStatusCode(htmlPage.getWebResponse().getStatusCode());
 		for (HtmlAnchor htmlAnchor : anchors) {
-//			String s = htmlAnchor.getHtmlPageOrNull().getWebResponse().getContentAsString();
-//			System.out.println(s);
+			//过滤https
+			if(htmlAnchor.getHrefAttribute().startsWith("https")){
+				continue;
+			}
 			/*
 			 * 校验是否合法
 			 * 非空串
 			 * 存在href属性
 			 * 是否为本站
 			 */
-			try {
-				com.gargoylesoftware.htmlunit.Page p = htmlAnchor.click();
+				com.gargoylesoftware.htmlunit.Page p = null;
+				try {
+					p = htmlAnchor.click();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				String newUrl = p.getUrl().toString();
 				System.out.println("newUrl:"+newUrl);
-				page.addTargetRequest(newUrl);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+				System.out.println(request.getUrl());
+				System.out.println(WfpUrlUtils.isSameHost(request.getUrl(), newUrl));
+				//判断是否为站内
+				if(!WfpUrlUtils.isSameHost(request.getUrl(), newUrl)){
+					System.err.println("站外的---------------------");
+					continue;
+				}
+//				page.addTargetRequest(newUrl);
 		}
 		System.out.println("<-----------------");
 		 String content = htmlPage.getWebResponse().getContentAsString();
@@ -84,12 +97,13 @@ public class HtmlUnitDownloader implements Downloader,Cloneable {
 		 webClientPool.returnToPool(webClient);
 		return page;
 	}
-
+	
 	@Override
 	public void setThread(int threadNum) {
 		this.poolSize = threadNum;
 	}
-    public void close() {
+	@Override
+	public void close() {
     	webClientPool.closeAll();
     }
 }

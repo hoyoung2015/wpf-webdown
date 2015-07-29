@@ -45,7 +45,9 @@ public class WebClientPool {
 				WebClient webClient = new WebClient(BrowserVersion.CHROME);
 				//这个必须加上，否则如果有页面不存在下载失败会报错
 				webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+				webClient.getOptions().setThrowExceptionOnScriptError(false);
 		        webClient.getOptions().setCssEnabled(false);
+		        webClient.getOptions().setUseInsecureSSL(false);
 				innerQueue.add(webClient);
 				webClientList.add(webClient);
 			}

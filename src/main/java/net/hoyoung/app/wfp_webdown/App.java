@@ -10,14 +10,17 @@ import us.codecraft.webmagic.scheduler.FileCacheQueueScheduler;
  */
 public class App 
 {
-//	private static String REQ_URL = "http://127.0.0.1:81";
-	private static String REQ_URL = "http://192.168.21.190:8375/rimp/login.do";
+	private static String REQ_URL = "http://localhost:81";
+//	private static String REQ_URL = "http://192.168.21.190:8375/rimp/login.do";
+//	private static String REQ_URL = "http://www.wisco.com.cn/wgxw2015/index.jhtml";
     public static void main( String[] args )
     {
     	Spider.create(new WfpPageProcessor())
-    	.setDownloader(new HtmlUnitDownloader())
     	.setScheduler(new FileCacheQueueScheduler("E:\\huyang\\webfootprint\\urls"))
-    	.addUrl(REQ_URL).thread(5)
+    	.setDownloader(new HtmlUnitDownloader())
+    	.addPipeline(new WfpFilePipeline("E:\\huyang\\webfootprint\\downloads"))
+    	.addUrl(REQ_URL).thread(1)
     	.run();
+    	System.exit(0);
     }
 }

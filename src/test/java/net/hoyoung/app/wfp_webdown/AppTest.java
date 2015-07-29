@@ -1,5 +1,6 @@
 package net.hoyoung.app.wfp_webdown;
 
+import net.hoyoung.app.wfp_webdown.utils.WfpUrlUtils;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -33,6 +34,7 @@ public class AppTest
      */
     public void testApp()
     {
-        assertTrue( true );
+    	boolean b = WfpUrlUtils.isSameHost("http://www.hoyoung.net", "http://2.net/");
+    	System.out.println(b);
     }
 }
