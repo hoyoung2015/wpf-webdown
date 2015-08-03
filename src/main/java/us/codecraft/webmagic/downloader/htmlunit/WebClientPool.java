@@ -47,7 +47,8 @@ public class WebClientPool {
 				webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
 				webClient.getOptions().setThrowExceptionOnScriptError(false);
 		        webClient.getOptions().setCssEnabled(false);
-		        webClient.getOptions().setUseInsecureSSL(false);
+		        webClient.getOptions().setJavaScriptEnabled(false);
+//		        webClient.getOptions().setUseInsecureSSL(false);
 				innerQueue.add(webClient);
 				webClientList.add(webClient);
 			}

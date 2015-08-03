@@ -33,8 +33,10 @@ public class WfpFilePipeline extends FilePersistentBase implements Pipeline {
     }
     public void process(ResultItems resultItems, Task task) {
         String path = this.path + PATH_SEPERATOR + task.getUUID() + PATH_SEPERATOR;
+        String url = resultItems.getRequest().getUrl();
+        url = url.replace("http://", "").replace("/", PATH_SEPERATOR).replace("?", "");
         try {
-            PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(getFile(path + resultItems.getRequest().getUrl() + ".html")),"UTF-8"));
+            PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(getFile(path + url+".html")),"UTF-8"));
             printWriter.println("url:\t" + resultItems.getRequest().getUrl());
             for (Map.Entry<String, Object> entry : resultItems.getAll().entrySet()) {
                 if (entry.getValue() instanceof Iterable) {

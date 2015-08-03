@@ -56,39 +56,8 @@ public class HtmlUnitDownloader implements Downloader,Closeable {
 		} catch (FailingHttpStatusCodeException | IOException e) {
 			e.printStackTrace();
 		}
-		List<HtmlAnchor> anchors = htmlPage.getAnchors();
-		System.out.println("----------------->");
 		Page page = new Page();
 		page.setStatusCode(htmlPage.getWebResponse().getStatusCode());
-		for (HtmlAnchor htmlAnchor : anchors) {
-			//过滤https
-			if(htmlAnchor.getHrefAttribute().startsWith("https")){
-				continue;
-			}
-			/*
-			 * 校验是否合法
-			 * 非空串
-			 * 存在href属性
-			 * 是否为本站
-			 */
-				com.gargoylesoftware.htmlunit.Page p = null;
-				try {
-					p = htmlAnchor.click();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				String newUrl = p.getUrl().toString();
-				System.out.println("newUrl:"+newUrl);
-				System.out.println(request.getUrl());
-				System.out.println(WfpUrlUtils.isSameHost(request.getUrl(), newUrl));
-				//判断是否为站内
-				if(!WfpUrlUtils.isSameHost(request.getUrl(), newUrl)){
-					System.err.println("站外的---------------------");
-					continue;
-				}
-//				page.addTargetRequest(newUrl);
-		}
-		System.out.println("<-----------------");
 		 String content = htmlPage.getWebResponse().getContentAsString();
 		 page.setUrl(new PlainText(request.getUrl()));
 		 page.setRequest(request);
@@ -97,7 +66,6 @@ public class HtmlUnitDownloader implements Downloader,Closeable {
 		 webClientPool.returnToPool(webClient);
 		return page;
 	}
-	
 	@Override
 	public void setThread(int threadNum) {
 		this.poolSize = threadNum;
